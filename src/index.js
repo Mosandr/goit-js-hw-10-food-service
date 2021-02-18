@@ -49,6 +49,5 @@ function setThemeOnLoad() {
 
 function createMenuMarkup() {
   const markup = menuGalleryTemplate({ items: menu });
-  console.log(markup);
   menuListRef.insertAdjacentHTML('afterbegin', markup);
 }
