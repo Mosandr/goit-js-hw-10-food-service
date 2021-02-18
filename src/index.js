@@ -1,60 +1,54 @@
 import './styles.css';
+import menu from './menu.json';
+import menuGalleryTemplate from './templates/menu-gallery.hbs';
 
 // Добавь функционал изменения темы при нажатии (событие change) на чекбокс #theme-switch-toggle в тулбаре.
-
 // По умолчанию тема светлая.
 // При изменении темы, необходимо добавлять на элемент body класс light-theme или dark-theme.
 // Выбранная тема должна сохраняться между перезагрузками страницы. Для хранения темы используй localStorage.
 // Если при загрузке страницы тема тёмная, не забудь поставить свойство checked у чекбокса #theme-switch-toggle в true, чтобы ползунок сдвинулся в правильное положение.
 // Для удобства хранения списка тем используй такое перечисление.
 
-// const Theme = {
-//   LIGHT: 'light-theme',
-//   DARK: 'dark-theme',
-// };
+const Theme = {
+  LIGHT: 'light-theme',
+  DARK: 'dark-theme',
+};
+
+const refs = {
+  bodyRef: document.querySelector('body'),
+  checkboxRef: document.querySelector('#theme-switch-toggle'),
+  menuListRef: document.querySelector('.js-menu'),
+};
+const { bodyRef, checkboxRef, menuListRef } = refs;
+
+setThemeOnLoad();
+
+checkboxRef.addEventListener('change', onCheckboxChangeHandler);
+
 // Шаблонизация
-// Используя шаблонизатор Handlebars создай шаблон одного элемента меню. После чего, используя шаблон, создай разметку всего меню по данным из menu.json и добавь в DOM в ul.js-menu.
+// Используя шаблонизатор Handlebars создай шаблон одного элемента меню. После чего,
+// используя шаблон, создай разметку всего меню по данным из menu.json и добавь в DOM в ul.js - menu.
 
 // Для иконок используется библиотека Material Icons, линк на веб-фонт уже есть в исходном HTML.
-
 // Ниже указана разметка элемента меню которая должна получаться по шаблону (данные будут разные для каждого объекта).
 
-// <li class="menu__item">
-//   <article class="card">
-//     <img
-//       src="https://s1.eda.ru/StaticContent/Photos/140812180013/140820212258/p_O.jpg"
-//       alt="Картофель, запеченный в мундире"
-//       class="card__image"
-//     />
-//     <div class="card__content">
-//       <h2 class="card__name">Картофель, запеченный в мундире</h2>
-//       <p class="card__price">
-//         <i class="material-icons"> monetization_on </i>
-//         100 кредитов
-//       </p>
+createMenuMarkup();
 
-//       <p class="card__descr">
-//         Ароматный, сытный, шипящий домашний картофель, фаршированный
-//         сметанно-беконной начинкой, — это очень простой и очень эффектный способ
-//         накормить большое количество человек, практически не потратив на готовку
-//         ни сил, ни времени. Обычную картошку при желании тут можно заменить на
-//         сладкий батат, а в начинку добавить, к примеру, кукурузу или сладкий
-//         красный перец.
-//       </p>
+function onCheckboxChangeHandler(event) {
+  bodyRef.classList.toggle(Theme.DARK);
+  event.currentTarget.checked
+    ? localStorage.setItem('theme', Theme.DARK)
+    : localStorage.setItem('theme', Theme.LIGHT);
+}
 
-//       <ul class="tag-list">
-//         <li class="tag-list__item">Картофель</li>
-//         <li class="tag-list__item">Чеснок</li>
-//         <li class="tag-list__item">Сметана</li>
-//         <li class="tag-list__item">Бекон</li>
-//         <li class="tag-list__item">Твердый сыр</li>
-//         <li class="tag-list__item">Зеленый лук</li>
-//       </ul>
-//     </div>
+function setThemeOnLoad() {
+  if (localStorage.getItem('theme') !== Theme.DARK) return;
+  bodyRef.classList.add(Theme.DARK);
+  checkboxRef.checked = true;
+}
 
-//     <button class="card__button button">
-//       <i class="material-icons button__icon"> shopping_cart </i>
-//       В корзину
-//     </button>
-//   </article>
-// </li>
+function createMenuMarkup() {
+  const markup = menuGalleryTemplate({ items: menu });
+  console.log(markup);
+  menuListRef.insertAdjacentHTML('afterbegin', markup);
+}
